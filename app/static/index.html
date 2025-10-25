@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG SDK - Чат с документами</title>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RAG SDK - Чат с документами</h1>
+        </header>
+        
+        <div class="main-layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Документы</h2>
+                </div>
+                
+                <div class="upload-section">
+                    <input type="file" id="fileInput" accept="*/*" style="display: none;">
+                    <button id="uploadBtn" class="btn btn-primary">
+                        <span>📁</span> Загрузить файл
+                    </button>
+                </div>
+                
+                <div class="document-filter">
+                    <label>
+                        <input type="radio" name="docFilter" value="all" checked>
+                        Все документы
+                    </label>
+                    <label>
+                        <input type="radio" name="docFilter" value="selected">
+                        Выбранный документ
+                    </label>
+                </div>
+                
+                <div id="documentList" class="document-list">
+                    <div class="loading">Загрузка документов...</div>
+                </div>
+            </aside>
+            
+            <main class="chat-section">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="welcome-message">
+                        <h2>Добро пожаловать в RAG SDK</h2>
+                        <p>Загрузите документы и начните задавать вопросы</p>
+                        <ul>
+                            <li>Загружайте текстовые файлы любого формата (PDF, DOCX, TXT, MD и др.)</li>
+                            <li>Выберите документ для целевого поиска или используйте все документы</li>
+                            <li>Задавайте вопросы и получайте ответы на основе загруженных документов</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div id="selectedDocInfo" class="selected-doc-info" style="display: none;"></div>
+                    <div class="chat-input-wrapper">
+                        <textarea 
+                            id="chatInput" 
+                            class="chat-input" 
+                            placeholder="Введите ваш вопрос..."
+                            rows="1"
+                        ></textarea>
+                        <button id="sendBtn" class="btn btn-send">
+                            <span>📤</span> Отправить
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Библиотека для рендеринга Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.0/marked.min.js"></script>
+    <script>
+        // Настройка marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+            console.log('Marked.js loaded successfully');
+        } else {
+            console.error('Marked.js failed to load');
+        }
+    </script>
+    <script src="/static/script.js?v=2"></script>
+</body>
+</html>
+

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag_postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "6432:5432"
+    volumes:
+      # Постоянное хранилище для данных PostgreSQL (сохраняется между запусками)
+      - postgres_data:/var/lib/postgresql/data
+      # Скрипт инициализации БД (выполняется только при первом создании)
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag_user -d rag_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: rag_app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      # Переопределяем только те переменные, которые специфичны для Docker окружения
+      PYTHONUNBUFFERED: 1
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    volumes:
+      # Загруженные файлы (сохраняются между запусками)
+      - ./uploads:/app/uploads
+      # Кеш моделей sentence-transformers (не нужно скачивать повторно)
+      - model_cache:/root/.cache/torch/sentence_transformers
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  # Именованный volume для данных PostgreSQL
+  # Данные сохраняются между запусками и пересборками контейнеров
+  # Для полной очистки используйте: docker-compose down -v
+  postgres_data:
+    driver: local
+  
+  # Кеш для моделей embeddings (sentence-transformers)
+  # Модели скачиваются один раз и переиспользуются
+  model_cache:
+    driver: local
+

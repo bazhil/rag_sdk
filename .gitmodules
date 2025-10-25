@@ -1,0 +1,3 @@
+[submodule "llm_manager"]
+	path = llm_manager
+	url = https://github.com/bazhil/llm_manager.git
