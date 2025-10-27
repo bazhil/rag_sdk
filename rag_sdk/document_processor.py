@@ -21,6 +21,7 @@ class DocumentProcessor:
     @staticmethod
     async def extract_text_from_file(file_path: str, filename: str) -> str:
         extension = Path(filename).suffix.lower()
+        print(f"[DOC_PROCESSOR] Extracting text from: {filename} (type: {extension})")
         
         if extension == '.pdf':
             return await DocumentProcessor._extract_from_pdf(file_path)
@@ -42,11 +43,15 @@ class DocumentProcessor:
         text_parts = []
         with open(file_path, 'rb') as file:
             pdf_reader = PdfReader(file)
+            num_pages = len(pdf_reader.pages)
+            print(f"[DOC_PROCESSOR] PDF has {num_pages} pages")
             for page in pdf_reader.pages:
                 text = page.extract_text()
                 if text:
                     text_parts.append(text)
-        return '\n\n'.join(text_parts)
+        result = '\n\n'.join(text_parts)
+        print(f"[DOC_PROCESSOR] Extracted {len(result)} characters from PDF")
+        return result
     
     @staticmethod
     async def _extract_from_docx(file_path: str) -> str:
@@ -110,6 +115,7 @@ class DocumentProcessor:
     def split_text_into_chunks(text: str, chunk_size: int = None, chunk_overlap: int = None) -> List[str]:
         chunk_size = chunk_size or settings.chunk_size
         chunk_overlap = chunk_overlap or settings.chunk_overlap
+        print(f"[DOC_PROCESSOR] Splitting text: {len(text)} chars into chunks (size={chunk_size}, overlap={chunk_overlap})")
         
         chunks = []
         start = 0
@@ -134,11 +140,13 @@ class DocumentProcessor:
             start = end - chunk_overlap
             if start <= 0:
                 start = end
-                
+        
+        print(f"[DOC_PROCESSOR] Created {len(chunks)} chunks")
         return chunks
     
     @staticmethod
     def prepare_chunks_for_storage(chunks: List[str], embeddings: List[List[float]]) -> List[Dict[str, Any]]:
+        print(f"[DOC_PROCESSOR] Preparing {len(chunks)} chunks for storage")
         prepared_chunks = []
         
         for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
@@ -150,6 +158,7 @@ class DocumentProcessor:
                     'length': len(chunk)
                 }
             })
-            
+        
+        print(f"[DOC_PROCESSOR] Prepared {len(prepared_chunks)} chunks")
         return prepared_chunks
 

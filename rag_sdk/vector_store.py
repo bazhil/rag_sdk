@@ -8,8 +8,14 @@ from .config import settings
 class VectorStore:
     def __init__(self):
         self.pool: Optional[asyncpg.Pool] = None
+        print("[VECTOR_STORE] VectorStore initialized")
         
     async def connect(self):
+        print(f"[VECTOR_STORE] Connecting to PostgreSQL...")
+        print(f"[VECTOR_STORE]   Host: {settings.postgres_host}:{settings.postgres_port}")
+        print(f"[VECTOR_STORE]   Database: {settings.postgres_db}")
+        print(f"[VECTOR_STORE]   User: {settings.postgres_user}")
+        
         self.pool = await asyncpg.create_pool(
             user=settings.postgres_user,
             password=settings.postgres_password,
@@ -19,12 +25,16 @@ class VectorStore:
             min_size=2,
             max_size=10
         )
+        print(f"[VECTOR_STORE] Connection pool created (min_size=2, max_size=10)")
         
     async def close(self):
         if self.pool:
+            print("[VECTOR_STORE] Closing connection pool...")
             await self.pool.close()
+            print("[VECTOR_STORE] Connection pool closed")
             
     async def create_document(self, filename: str, file_size: int, metadata: Optional[Dict[str, Any]] = None) -> int:
+        print(f"[VECTOR_STORE] Creating document: {filename} ({file_size} bytes)")
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
@@ -34,9 +44,12 @@ class VectorStore:
                 """,
                 filename, file_size, json.dumps(metadata or {})
             )
-            return row['id']
+            doc_id = row['id']
+            print(f"[VECTOR_STORE] Document created: ID={doc_id}")
+            return doc_id
             
     async def add_chunks(self, document_id: int, chunks: List[Dict[str, Any]]):
+        print(f"[VECTOR_STORE] Adding {len(chunks)} chunks for document ID={document_id}")
         async with self.pool.acquire() as conn:
             await conn.executemany(
                 """
@@ -47,7 +60,7 @@ class VectorStore:
                     (
                         document_id,
                         chunk['content'],
-                        json.dumps(chunk['embedding']),  # Правильный формат для vector: JSON array
+                        json.dumps(chunk['embedding']),
                         chunk['chunk_index'],
                         json.dumps(chunk.get('metadata', {}))
                     )
@@ -56,6 +69,7 @@ class VectorStore:
             )
             
     async def search_similar(self, query_embedding: List[float], document_id: Optional[int] = None, limit: int = 5) -> List[Dict[str, Any]]:
+        print(f"[VECTOR_STORE] Searching similar chunks: doc_id={document_id}, limit={limit}")
         query_vector = json.dumps(query_embedding)
         
         async with self.pool.acquire() as conn:
@@ -86,8 +100,12 @@ class VectorStore:
                     """,
                     query_vector, limit
                 )
-                
-            return [dict(row) for row in rows]
+            
+            results = [dict(row) for row in rows]
+            print(f"[VECTOR_STORE] Found {len(results)} similar chunks")
+            if results:
+                print(f"[VECTOR_STORE]   Best match: {results[0]['filename']} (similarity: {results[0]['similarity']:.2%})")
+            return results
             
     async def get_documents(self) -> List[Dict[str, Any]]:
         async with self.pool.acquire() as conn:
@@ -129,6 +147,8 @@ class VectorStore:
             return None
             
     async def delete_document(self, document_id: int):
+        print(f"[VECTOR_STORE] Deleting document ID={document_id}")
         async with self.pool.acquire() as conn:
             await conn.execute("DELETE FROM documents WHERE id = $1", document_id)
+            print(f"[VECTOR_STORE] Document ID={document_id} deleted (including all chunks)")
 
