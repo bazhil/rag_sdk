@@ -7,31 +7,43 @@
 ### Шаг 1: Клонирование
 
 ```bash
-git clone --recurse-submodules <repository-url>
+git clone --recurse-submodules https://github.com/yourusername/rag_sdk.git
 cd rag_sdk
 ```
 
-### Шаг 2: Настройка LLM
+### Шаг 2: Настройка LLM провайдера
 
-Отредактируйте файл `.env` (он уже создан) и укажите настройки LLM:
+Создайте файл `.env` или отредактируйте существующий:
 
-**Для локального Ollama:**
+**Вариант 1: Ollama (локально, бесплатно)**
 ```env
 PROVIDER=ollama
 OLLAMA_HOST=http://host.docker.internal:11434
 OLLAMA_MODEL=llama3
 ```
 
-Убедитесь, что Ollama запущен:
+Установите и запустите Ollama:
 ```bash
+# Linux/Mac
+curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3
 ollama serve
+
+# Windows - скачайте с https://ollama.com/download
 ```
 
-**Для OpenAI:**
+**Вариант 2: OpenAI**
 ```env
 PROVIDER=openai
 OPENAI_API_KEY=sk-your-api-key
+OPENAI_MODEL=gpt-3.5-turbo
+```
+
+**Вариант 3: GigaChat**
+```env
+PROVIDER=gigachat
+GIGA_CHAT_AUTH_KEY=your-client-secret
+GIGA_CHAT_MODEL=GigaChat
 ```
 
 ### Шаг 3: Запуск
@@ -44,10 +56,10 @@ docker-compose up --build
 
 Откройте http://localhost:8000 в браузере
 
-**Готово!** Вы можете:
-1. Загружать документы
-2. Задавать вопросы
-3. Получать ответы на основе документов
+**Готово!** Теперь вы можете:
+1. Загружать документы (PDF, DOCX, TXT, MD и др.)
+2. Задавать вопросы по документам
+3. Получать ответы на основе содержимого
 
 ## Проверка работы
 
@@ -111,10 +123,11 @@ make restart  # Перезапустить
 
 ## Что дальше?
 
-- Подробная документация: [README.md](README.md)
-- Инструкция по установке: [INSTALL.md](INSTALL.md)
-- Примеры использования: [USAGE.md](USAGE.md)
-- Пример кода: [example_usage.py](example_usage.py)
+- [Полная документация](README.md) - оглавление всей документации
+- [Детальная установка](INSTALL.md) - подробная инструкция по установке
+- [Руководство по использованию](USAGE.md) - примеры работы с API и SDK
+- [Архитектура системы](ARCHITECTURE.md) - технические детали
+- [Пример кода](../example_usage.py) - примеры использования SDK
 
 ## Решение проблем
 
