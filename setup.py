@@ -13,7 +13,7 @@ setup(
     description="Python SDK for RAG with PostgreSQL vector storage",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/rag_sdk",
+    url="https://github.com/bazhil/rag_sdk",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
