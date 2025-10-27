@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag_postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "6432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag_user -d rag_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: rag_ollama
+    env_file:
+      - .env
+    environment:
+      OLLAMA_MODEL: ${OLLAMA_MODEL}
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  app:
+    build: .
+    container_name: rag_app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONUNBUFFERED: 1
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL}
+    volumes:
+      - ./uploads:/app/uploads
+      - model_cache:/root/.cache/torch/sentence_transformers
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  
+  model_cache:
+    driver: local
+
+  ollama_data:
+    driver: local
+

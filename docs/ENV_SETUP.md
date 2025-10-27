@@ -74,7 +74,7 @@ services:
       # и т.д.
 ```
 
-`docker-compose` автоматически:
+`docker compose` автоматически:
 1. Читает `.env` файл из корня проекта
 2. Подставляет переменные в `environment` секцию
 3. Передает их в контейнер как переменные окружения
@@ -154,7 +154,7 @@ cat llm_manager/.env
 ### Проверка в Docker:
 ```bash
 # Запуск контейнера
-docker-compose up -d
+docker compose up -d
 
 # Проверка переменных в контейнере
 docker exec rag_app env | grep PROVIDER
@@ -189,7 +189,7 @@ cat .env | grep PROVIDER
 pwd
 # Должно быть: /path/to/rag_sdk
 
-# В Docker переменные прокинуты через docker-compose.yml
+# В Docker переменные прокинуты через docker compose
 docker exec rag_app env | grep PROVIDER
 ```
 
@@ -201,8 +201,8 @@ docker exec rag_app env | grep PROVIDER
 cat .env | grep PROVIDER
 
 # Пересоздайте контейнер
-docker-compose down
-docker-compose up --build
+docker compose down
+docker compose up --build
 ```
 
 
@@ -220,7 +220,7 @@ ollama serve &
 ./setup_env.sh
 
 # 3. Запустите проект
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Пример 2: Использование OpenAI
@@ -236,7 +236,7 @@ nano .env
 # OPENAI_API_KEY=sk-your-key
 
 # 3. Запустите проект
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Пример 3: Локальная разработка

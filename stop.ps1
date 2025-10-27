@@ -4,7 +4,7 @@ Write-Host "==================================" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "[INFO] Остановка контейнеров..." -ForegroundColor Yellow
-docker-compose down
+docker compose down
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""

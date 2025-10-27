@@ -212,16 +212,16 @@
 ### Docker Compose
 ```bash
 # Все логи
-docker-compose logs -f
+docker compose logs -f
 
 # Только логи приложения
-docker-compose logs -f app
+docker compose logs -f app
 
 # Последние 100 строк
-docker-compose logs --tail=100 app
+docker compose logs --tail=100 app
 
 # Поиск по логам
-docker-compose logs app | grep "\[RAG_MANAGER\]"
+docker compose logs app | grep "\[RAG_MANAGER\]"
 ```
 
 ### Локальный запуск
@@ -269,7 +269,7 @@ docker logs rag_app 2>&1 | grep "\[DOC_PROCESSOR\]"
 
 ### Сохранение логов в файл
 ```bash
-docker-compose logs app > rag_logs.txt
+docker compose logs app > rag_logs.txt
 ```
 
 ### Анализ производительности

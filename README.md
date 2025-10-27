@@ -18,6 +18,7 @@ Python SDK для создания систем RAG (Retrieval-Augmented Generat
 - [**Быстрый старт**](docs/QUICKSTART.md) - запуск за 5 минут
 - [**Установка**](docs/INSTALL.md) - подробная инструкция по установке
 - [**Использование**](docs/USAGE.md) - руководство по использованию API и SDK
+- [**Docker Compose с Ollama**](docs/DOCKER_OLLAMA.md) - запуск с Ollama в контейнере или локально
 - [**Логирование**](docs/LOGGING.md) - система логирования и отладка
 - [**Архитектура**](docs/ARCHITECTURE.md) - архитектура и технические детали
 - [**Структура проекта**](docs/PROJECT_STRUCTURE.md) - описание файлов и директорий
@@ -83,7 +84,7 @@ OLLAMA_MODEL=llama3
 ### 3. Запуск через Docker Compose
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Приложение будет доступно по адресу: http://localhost:8000

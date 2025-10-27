@@ -25,7 +25,7 @@ GIGA_CHAT_MODEL=GigaChat
 ### Шаг 3: Запустите проект
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ## 📊 Поток данных для GigaChat
@@ -143,7 +143,7 @@ CHUNK_OVERLAP=50
 ### 1. Запустите проект
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 2. Откройте веб-интерфейс
@@ -205,8 +205,8 @@ cat .env | grep GIGA_CHAT_MODEL
 
 **Решение:** Пересоберите контейнер
 ```bash
-docker-compose down
-docker-compose up --build
+docker compose down
+docker compose up --build
 ```
 
 ### Медленные ответы
@@ -229,7 +229,7 @@ docker-compose up --build
 - [ ] `PROVIDER=gigachat` указан в `.env`
 - [ ] `GIGA_CHAT_AUTH_KEY` указан в `.env`
 - [ ] `GIGA_CHAT_MODEL` указан в `.env` (опционально)
-- [ ] Приложение перезапущено: `docker-compose restart app`
+- [ ] Приложение перезапущено: `docker compose restart app`
 
 **Готово к работе с GigaChat!**
 

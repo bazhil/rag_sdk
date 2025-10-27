@@ -37,7 +37,7 @@ CHUNK_OVERLAP=50
 Write-Host "[INFO] llm_manager будет использовать переменные из основного .env" -ForegroundColor Green
 
 Write-Host "[INFO] Запуск Docker Compose..." -ForegroundColor Green
-docker-compose up -d --build
+docker compose up -d --build
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""
@@ -49,12 +49,12 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "API документация: http://localhost:8000/docs" -ForegroundColor Cyan
     Write-Host "Health check: http://localhost:8000/health" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "Для просмотра логов: docker-compose logs -f" -ForegroundColor Yellow
-    Write-Host "Для остановки: docker-compose down" -ForegroundColor Yellow
+    Write-Host "Для просмотра логов: docker compose logs -f" -ForegroundColor Yellow
+    Write-Host "Для остановки: docker compose down" -ForegroundColor Yellow
     Write-Host ""
 } else {
     Write-Host ""
     Write-Host "[ERROR] Ошибка при запуске!" -ForegroundColor Red
-    Write-Host "Проверьте логи: docker-compose logs" -ForegroundColor Yellow
+    Write-Host "Проверьте логи: docker compose logs" -ForegroundColor Yellow
 }
 

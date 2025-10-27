@@ -49,7 +49,7 @@ GIGA_CHAT_MODEL=GigaChat
 ### Шаг 3: Запуск
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Шаг 4: Использование
@@ -154,8 +154,8 @@ chmod 777 uploads/
 
 Пересоздайте контейнеры:
 ```bash
-docker-compose down -v
-docker-compose up --build
+docker compose down -v
+docker compose up --build
 ```
 
 ## Поддерживаемые форматы файлов

@@ -54,7 +54,7 @@ OPENAI_API_KEY=sk-your-api-key
 ### 3. Запуск через Docker
 
 ```powershell
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 4. Открытие веб-интерфейса
@@ -86,38 +86,38 @@ OLLAMA_MODEL=llama3
 ### Запуск
 
 ```powershell
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Остановка
 
 ```powershell
-docker-compose down
+docker compose down
 ```
 
 ### Просмотр логов
 
 ```powershell
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Перезапуск
 
 ```powershell
-docker-compose restart
+docker compose restart
 ```
 
 ### Очистка всех данных
 
 ```powershell
-docker-compose down -v
+docker compose down -v
 Remove-Item -Recurse -Force uploads\*
 ```
 
 ### Проверка состояния
 
 ```powershell
-docker-compose ps
+docker compose ps
 ```
 
 ## Локальная разработка на Windows
@@ -350,7 +350,7 @@ if (!(Get-Command docker -ErrorAction SilentlyContinue)) {
 }
 
 # Запуск
-docker-compose up -d
+docker compose up -d
 
 Write-Host "RAG SDK запущен!" -ForegroundColor Green
 Write-Host "Откройте http://localhost:8000" -ForegroundColor Cyan
@@ -360,7 +360,7 @@ Write-Host "Откройте http://localhost:8000" -ForegroundColor Cyan
 
 ```powershell
 Write-Host "Остановка RAG SDK..." -ForegroundColor Yellow
-docker-compose down
+docker compose down
 Write-Host "RAG SDK остановлен." -ForegroundColor Green
 ```
 

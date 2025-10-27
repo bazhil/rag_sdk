@@ -33,7 +33,7 @@ else
 fi
 
 # llm_manager использует переменные окружения напрямую
-# В Docker они прокинуты через docker-compose.yml
+# В Docker они прокинуты через docker compose
 # Локально load_dotenv() найдет .env в корне проекта
 echo "[INFO] llm_manager будет использовать переменные из основного .env"
 
@@ -54,6 +54,6 @@ echo "==================================="
 echo ""
 echo "Следующие шаги:"
 echo "1. Отредактируйте .env для настройки LLM провайдера"
-echo "2. Запустите: docker-compose up --build"
+echo "2. Запустите: docker compose up --build"
 echo ""
 

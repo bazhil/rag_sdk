@@ -52,7 +52,7 @@ DEEPSEEK_API_KEY=your-api-key
 3. **Запустите Docker Compose**
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 При первом запуске:
@@ -271,10 +271,10 @@ asyncio.run(main())
 
 ```bash
 # Остановить сервисы
-docker-compose down
+docker compose down
 
 # Остановить и удалить данные
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Локальный запуск
@@ -304,7 +304,7 @@ curl http://localhost:11434/api/tags
 Очистите Docker кеш:
 ```bash
 docker system prune -a
-docker-compose build --no-cache
+docker compose build --no-cache
 ```
 
 ### Проблемы с правами доступа к uploads/
@@ -319,14 +319,14 @@ chmod 777 uploads/
 
 ```bash
 # Все логи
-docker-compose logs
+docker compose logs
 
 # Логи конкретного сервиса
-docker-compose logs app
-docker-compose logs postgres
+docker compose logs app
+docker compose logs postgres
 
 # Следить за логами в реальном времени
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Локальный запуск
