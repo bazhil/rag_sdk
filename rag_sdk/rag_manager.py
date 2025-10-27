@@ -69,7 +69,7 @@ class RAGManager:
         
         return document_id
         
-    async def search(self, query: str, document_id: Optional[int] = None, limit: int = 5, min_similarity: float = 0.3) -> List[Dict[str, Any]]:
+    async def search(self, query: str, document_id: Optional[int] = None, limit: int = 7, min_similarity: float = 0.4) -> List[Dict[str, Any]]:
         print(f"[RAG_MANAGER] Search query: '{query[:100]}...' | doc_id: {document_id} | limit: {limit}")
         
         query_embedding = self.embedding_model.encode(query)
@@ -87,12 +87,12 @@ class RAGManager:
         ]
         
         print(f"[RAG_MANAGER] Search results: {len(results)} total → {len(filtered_results)} after filtering (min_similarity: {min_similarity})")
-        for i, result in enumerate(filtered_results[:3], 1):
+        for i, result in enumerate(filtered_results[:limit], 1):
             print(f"[RAG_MANAGER]   Top {i}: {result['filename']} (similarity: {result['similarity']:.2%})")
         
         return filtered_results[:limit]
         
-    async def generate_answer(self, query: str, document_id: Optional[int] = None, context_limit: int = 3) -> Dict[str, Any]:
+    async def generate_answer(self, query: str, document_id: Optional[int] = None, context_limit: int = 7) -> Dict[str, Any]:
         print(f"\n{'='*80}")
         print(f"[RAG_MANAGER] ========== GENERATE ANSWER START ==========")
         print(f"[RAG_MANAGER] Query: {query}")
