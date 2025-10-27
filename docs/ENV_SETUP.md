@@ -266,7 +266,15 @@ uvicorn app.main:app --reload
 
 ## Дополнительная информация
 
-- Документация llm_manager: `llm_manager/README.md`
-- Примеры использования: `example_usage.py`
-- Установка: `INSTALL.md`
+### Документация проекта
+
+- [Быстрый старт](QUICKSTART.md) - начните работу за 5 минут
+- [Установка](INSTALL.md) - детальная инструкция
+- [Использование](USAGE.md) - руководство по API и SDK
+- [Настройка GigaChat](GIGACHAT_SETUP.md) - интеграция с GigaChat
+
+### Примеры
+
+- [example_usage.py](../example_usage.py) - примеры использования SDK
+- [llm_manager README](../llm_manager/README.md) - документация llm_manager
 

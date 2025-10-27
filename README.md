@@ -11,6 +11,20 @@ Python SDK для создания систем RAG (Retrieval-Augmented Generat
 - **Интеграция с различными LLM** через llm_manager (OpenAI, Ollama, DeepSeek, Yandex GPT, GigaChat)
 - **Docker Compose** для простого развертывания
 
+## Документация
+
+Полная документация находится в директории [`docs/`](docs/):
+
+- [**Быстрый старт**](docs/QUICKSTART.md) - запуск за 5 минут
+- [**Установка**](docs/INSTALL.md) - подробная инструкция по установке
+- [**Использование**](docs/USAGE.md) - руководство по использованию API и SDK
+- [**Архитектура**](docs/ARCHITECTURE.md) - архитектура и технические детали
+- [**Структура проекта**](docs/PROJECT_STRUCTURE.md) - описание файлов и директорий
+- [**Настройка окружения**](docs/ENV_SETUP.md) - конфигурация переменных окружения
+- [**Настройка GigaChat**](docs/GIGACHAT_SETUP.md) - интеграция с GigaChat
+- [**Windows**](docs/WINDOWS.md) - инструкции для Windows
+- [**Улучшения**](docs/IMPROVEMENTS.md) - рекомендации по повышению качества
+
 ## Структура проекта
 
 ```
@@ -273,6 +287,7 @@ MIT License
 ## Благодарности
 
 - [llm_manager](https://github.com/bazhil/llm_manager) - для работы с различными LLM
-- pgvector - для векторного поиска в PostgreSQL
-- sentence-transformers - для создания embeddings
+- [pgvector](https://github.com/pgvector/pgvector) - для векторного поиска в PostgreSQL
+- [sentence-transformers](https://www.sbert.net/) - для создания embeddings
+- [FastAPI](https://fastapi.tiangolo.com/) - веб-фреймворк
 

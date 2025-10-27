@@ -335,7 +335,17 @@ docker-compose logs -f
 
 ## Дополнительные ресурсы
 
-- Документация pgvector: https://github.com/pgvector/pgvector
-- Документация FastAPI: https://fastapi.tiangolo.com/
-- Документация llm_manager: https://github.com/bazhil/llm_manager
+### Документация проекта
+
+- [Быстрый старт](QUICKSTART.md) - запуск за 5 минут
+- [Руководство по использованию](USAGE.md) - работа с API и SDK
+- [Архитектура](ARCHITECTURE.md) - техническая документация
+- [Настройка окружения](ENV_SETUP.md) - переменные окружения
+
+### Внешние ресурсы
+
+- [pgvector](https://github.com/pgvector/pgvector) - векторное хранилище
+- [FastAPI](https://fastapi.tiangolo.com/) - веб-фреймворк
+- [llm_manager](https://github.com/bazhil/llm_manager) - интеграция с LLM
+- [sentence-transformers](https://www.sbert.net/) - модели embeddings
 

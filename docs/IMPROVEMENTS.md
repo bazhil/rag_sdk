@@ -261,12 +261,21 @@ max_tokens = 512       # Короче ответы LLM (сейчас 1024)
 
 ## 📚 Полезные ресурсы
 
-- [Sentence Transformers](https://www.sbert.net/)
-- [LangChain Text Splitters](https://python.langchain.com/docs/modules/data_connection/document_transformers/)
-- [pgvector Best Practices](https://github.com/pgvector/pgvector)
-- [RAG Evaluation Metrics](https://docs.ragas.io/)
+### Внешние ресурсы
+
+- [Sentence Transformers](https://www.sbert.net/) - модели embeddings
+- [LangChain Text Splitters](https://python.langchain.com/docs/modules/data_connection/document_transformers/) - разбиение текста
+- [pgvector Best Practices](https://github.com/pgvector/pgvector) - векторное хранилище
+- [RAG Evaluation Metrics](https://docs.ragas.io/) - метрики оценки
+
+### Документация проекта
+
+- [Архитектура](ARCHITECTURE.md) - техническая архитектура системы
+- [Использование](USAGE.md) - руководство по API и SDK
+- [Структура проекта](PROJECT_STRUCTURE.md) - описание файлов
 
 ---
 
 **Текущий статус:** ✅ Базовые улучшения реализованы, система готова к использованию
+
 
