@@ -28,6 +28,9 @@ OLLAMA_MODEL=llama3
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 CHUNK_SIZE=500
 CHUNK_OVERLAP=50
+
+SEARCH_LIMIT=7
+MIN_SIMILARITY=0.4
 "@
     $envContent | Out-File -FilePath .env -Encoding UTF8
     Write-Host "[INFO] Файл .env создан. Отредактируйте его при необходимости!" -ForegroundColor Yellow

@@ -26,6 +26,10 @@ OLLAMA_MODEL=llama3
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 CHUNK_SIZE=500
 CHUNK_OVERLAP=50
+
+# Search Settings
+SEARCH_LIMIT=7
+MIN_SIMILARITY=0.4
 EOF
     echo "[✓] Файл .env создан"
 else

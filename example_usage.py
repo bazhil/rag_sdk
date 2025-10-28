@@ -28,8 +28,7 @@ async def main():
             
             result = await rag.generate_answer(
                 query=query,
-                document_id=document_id,
-                context_limit=3
+                document_id=document_id
             )
             
             print(f"\nОтвет:\n{result['answer']}")

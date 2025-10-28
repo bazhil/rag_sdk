@@ -145,7 +145,7 @@ async def chat(request: QueryRequest):
     print(f"\n[API] ========== CHAT REQUEST ==========")
     print(f"[API] Query: {request.query}")
     print(f"[API] Document ID: {request.document_id}")
-    print(f"[API] Context limit: {request.context_limit or 3}")
+    print(f"[API] Context limit: {request.context_limit or 'default from settings'}")
     try:
         if not request.query or not request.query.strip():
             print(f"[API] ERROR: Empty query")
@@ -154,7 +154,7 @@ async def chat(request: QueryRequest):
         result = await rag_manager.generate_answer(
             query=request.query,
             document_id=request.document_id,
-            context_limit=request.context_limit or 3
+            context_limit=request.context_limit
         )
         
         print(f"[API] Chat response generated successfully")
@@ -175,7 +175,7 @@ async def search(request: QueryRequest):
     print(f"\n[API] ========== SEARCH REQUEST ==========")
     print(f"[API] Query: {request.query}")
     print(f"[API] Document ID: {request.document_id}")
-    print(f"[API] Limit: {request.context_limit or 5}")
+    print(f"[API] Limit: {request.context_limit or 'default from settings'}")
     try:
         if not request.query or not request.query.strip():
             print(f"[API] ERROR: Empty query")
@@ -184,7 +184,7 @@ async def search(request: QueryRequest):
         results = await rag_manager.search(
             query=request.query,
             document_id=request.document_id,
-            limit=request.context_limit or 5
+            limit=request.context_limit
         )
         
         print(f"[API] Search successful: {len(results)} results")

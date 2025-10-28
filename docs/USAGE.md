@@ -513,6 +513,18 @@ EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 - `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` - мультиязычная
 - `sentence-transformers/all-mpnet-base-v2` - более точная, но медленнее
 
+### Параметры поиска
+
+В `.env`:
+```env
+SEARCH_LIMIT=7         # Количество возвращаемых результатов
+MIN_SIMILARITY=0.4     # Минимальный порог схожести (0.0-1.0)
+```
+
+Рекомендации:
+- `SEARCH_LIMIT`: 5-10 для большинства случаев
+- `MIN_SIMILARITY`: 0.3-0.5 (меньше = больше результатов, но менее релевантных)
+
 ### Количество контекстных фрагментов
 
 В запросе:
