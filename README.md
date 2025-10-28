@@ -1,6 +1,6 @@
-# RAG SDK - Retrieval-Augmented Generation SDK
+# RAG - Retrieval-Augmented Generation
 
-Python SDK для создания систем RAG (Retrieval-Augmented Generation) с использованием PostgreSQL + pgvector для хранения векторных представлений документов.
+Небольшой проект на Python для экспериментов с системой RAG (Retrieval-Augmented Generation) с использованием PostgreSQL + pgvector для хранения векторных представлений документов.
 
 ## Возможности
 
