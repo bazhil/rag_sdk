@@ -68,7 +68,8 @@ class VectorStore:
                 ]
             )
             
-    async def search_similar(self, query_embedding: List[float], document_id: Optional[int] = None, limit: int = 7) -> List[Dict[str, Any]]:
+    async def search_similar(self, query_embedding: List[float], document_id: Optional[int] = None, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        limit = limit if limit is not None else settings.search_limit
         print(f"[VECTOR_STORE] Searching similar chunks: doc_id={document_id}, limit={limit}")
         query_vector = json.dumps(query_embedding)
         

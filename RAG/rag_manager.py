@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'llm_manager'))
 from .vector_store import VectorStore
 from .embeddings import EmbeddingModel
 from .document_processor import DocumentProcessor
+from .config import settings
 
 
 class RAGManager:
@@ -69,7 +70,9 @@ class RAGManager:
         
         return document_id
         
-    async def search(self, query: str, document_id: Optional[int] = None, limit: int = 7, min_similarity: float = 0.4) -> List[Dict[str, Any]]:
+    async def search(self, query: str, document_id: Optional[int] = None, limit: Optional[int] = None, min_similarity: Optional[float] = None) -> List[Dict[str, Any]]:
+        limit = limit if limit is not None else settings.search_limit
+        min_similarity = min_similarity if min_similarity is not None else settings.min_similarity
         print(f"[RAG_MANAGER] Search query: '{query[:100]}...' | doc_id: {document_id} | limit: {limit}")
         
         query_embedding = self.embedding_model.encode(query)
@@ -92,7 +95,8 @@ class RAGManager:
         
         return filtered_results[:limit]
         
-    async def generate_answer(self, query: str, document_id: Optional[int] = None, context_limit: int = 7) -> Dict[str, Any]:
+    async def generate_answer(self, query: str, document_id: Optional[int] = None, context_limit: Optional[int] = None) -> Dict[str, Any]:
+        context_limit = context_limit if context_limit is not None else settings.search_limit
         print(f"\n{'='*80}")
         print(f"[RAG_MANAGER] ========== GENERATE ANSWER START ==========")
         print(f"[RAG_MANAGER] Query: {query}")

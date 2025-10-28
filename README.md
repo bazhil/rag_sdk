@@ -205,10 +205,12 @@ await rag.delete_document(document_id)
 - `YANDEX_GPT_API_KEY` - ключ Yandex GPT API
 - `GIGA_CHAT_AUTH_KEY` - ключ GigaChat
 
-#### Embeddings
+#### Embeddings и Поиск
 - `EMBEDDING_MODEL` - модель для векторизации (по умолчанию: sentence-transformers/all-MiniLM-L6-v2)
-- `CHUNK_SIZE` - размер фрагмента текста
-- `CHUNK_OVERLAP` - перекрытие между фрагментами
+- `CHUNK_SIZE` - размер фрагмента текста (по умолчанию: 500)
+- `CHUNK_OVERLAP` - перекрытие между фрагментами (по умолчанию: 50)
+- `SEARCH_LIMIT` - количество возвращаемых результатов поиска (по умолчанию: 7)
+- `MIN_SIMILARITY` - минимальный порог схожести для фильтрации результатов, 0.0-1.0 (по умолчанию: 0.4)
 
 ## Поддерживаемые форматы файлов
 

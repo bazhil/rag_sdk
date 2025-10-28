@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     chunk_size: int = 500
     chunk_overlap: int = 50
     
+    search_limit: int = 7
+    min_similarity: float = 0.4
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
@@ -49,5 +52,7 @@ print(f"OLLAMA_MODEL: {settings.ollama_model}")
 print(f"OPENAI_API_KEY: {'SET' if settings.openai_api_key else 'NOT SET'}")
 print(f"OPENAI_MODEL: {settings.openai_model}")
 print(f"EMBEDDING_MODEL: {settings.embedding_model}")
+print(f"SEARCH_LIMIT: {settings.search_limit}")
+print(f"MIN_SIMILARITY: {settings.min_similarity}")
 print("=" * 60)
 
