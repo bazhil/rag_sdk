@@ -19,6 +19,7 @@
 - [**Установка**](docs/INSTALL.md) - подробная инструкция по установке
 - [**Использование**](docs/USAGE.md) - руководство по использованию API и SDK
 - [**Docker Compose с Ollama**](docs/DOCKER_OLLAMA.md) - запуск с Ollama в контейнере или локально
+- [**Работа с Submodules**](docs/SUBMODULES.md) - инициализация и устранение проблем
 - [**Логирование**](docs/LOGGING.md) - система логирования и отладка
 - [**Архитектура**](docs/ARCHITECTURE.md) - архитектура и технические детали
 - [**Структура проекта**](docs/PROJECT_STRUCTURE.md) - описание файлов и директорий
@@ -46,10 +47,17 @@ RAG/
 │       ├── style.css
 │       └── script.js
 ├── llm_manager/                # Git submodule для работы с LLM
+├── scripts/                    # Вспомогательные скрипты
+│   ├── docker-build.sh         # Сборка Docker с автоинициализацией submodules (Linux/Mac)
+│   ├── docker-build.ps1        # Сборка Docker с автоинициализацией submodules (Windows)
+│   ├── start.ps1               # Запуск приложения (Windows)
+│   ├── stop.ps1                # Остановка приложения (Windows)
+│   ├── setup_env.sh            # Настройка окружения (Linux/Mac)
+│   └── init.sql                # Инициализация базы данных
 ├── uploads/                    # Директория для загруженных файлов
 ├── docker-compose.yml          # Docker Compose конфигурация
 ├── Dockerfile                  # Docker образ приложения
-├── init.sql                    # Инициализация базы данных
+├── Makefile                    # Команды для управления проектом
 ├── requirements.txt            # Python зависимости
 └── .env                        # Переменные окружения
 ```
@@ -58,18 +66,14 @@ RAG/
 
 > **Примечание:** PostgreSQL в Docker доступен на порту **6432** (не 5432), чтобы не конфликтовать с локально установленным PostgreSQL.
 
-### 1. Клонирование репозитория с submodule
+### 1. Клонирование репозитория
 
 ```bash
-git clone --recurse-submodules https://github.com/yourusername/RAG.git
+git clone https://github.com/bazhil/RAG.git
 cd RAG
 ```
 
-Если уже клонировали без submodule:
-
-```bash
-git submodule update --init --recursive
-```
+**Примечание:** Git submodules будут автоматически инициализированы при первом запуске скриптов сборки.
 
 ### 2. Настройка переменных окружения
 
@@ -83,9 +87,22 @@ OLLAMA_MODEL=llama3
 
 ### 3. Запуск через Docker Compose
 
+#### Linux/Mac:
+```bash
+./scripts/docker-build.sh
+```
+
+#### Windows PowerShell:
+```powershell
+.\scripts\docker-build.ps1
+```
+
+#### Или напрямую:
 ```bash
 docker compose up --build
 ```
+
+**Примечание:** Скрипты автоматически инициализируют git submodules перед сборкой.
 
 Приложение будет доступно по адресу: http://localhost:8000
 

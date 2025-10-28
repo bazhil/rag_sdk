@@ -22,9 +22,9 @@ RAG/
 
 ### Windows PowerShell:
 ```powershell
-.\start.ps1
+.\scripts\start.ps1
 ```
-Скрипт автоматически создаст `.env` и необходимые symlink'и.
+Скрипт автоматически создаст `.env` и настроит окружение.
 
 ## Ручная настройка
 

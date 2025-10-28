@@ -12,6 +12,19 @@ if (!(Get-Command docker -ErrorAction SilentlyContinue)) {
 Write-Host "[INFO] Проверка Docker..." -ForegroundColor Green
 docker --version
 
+Write-Host "[INFO] Проверка submodules..." -ForegroundColor Green
+if (!(Test-Path "llm_manager/requirements.txt")) {
+    Write-Host "[INFO] Submodule llm_manager не инициализирован. Инициализация..." -ForegroundColor Yellow
+    git submodule update --init --recursive
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[OK] Submodules инициализированы" -ForegroundColor Green
+    } else {
+        Write-Host "[WARNING] Не удалось инициализировать submodules. Попробуйте вручную: git submodule update --init --recursive" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "[OK] Submodules уже инициализированы" -ForegroundColor Green
+}
+
 if (!(Test-Path ".env")) {
     Write-Host "[WARNING] Файл .env не найден. Создаем файл..." -ForegroundColor Yellow
     $envContent = @"

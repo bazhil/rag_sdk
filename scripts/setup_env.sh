@@ -6,6 +6,21 @@ echo "  RAG SDK - Настройка окружения  "
 echo "==================================="
 echo ""
 
+# Проверка и инициализация submodules
+echo "[INFO] Проверка submodules..."
+if [ ! -f "llm_manager/requirements.txt" ]; then
+    echo "[INFO] Submodule llm_manager не инициализирован. Инициализация..."
+    git submodule update --init --recursive
+    if [ $? -eq 0 ]; then
+        echo "[✓] Submodules успешно инициализированы"
+    else
+        echo "[WARNING] Не удалось инициализировать submodules. Попробуйте вручную: git submodule update --init --recursive"
+    fi
+else
+    echo "[✓] Submodules уже инициализированы"
+fi
+echo ""
+
 # Создание .env если не существует
 if [ ! -f .env ]; then
     echo "[INFO] Создание файла .env..."

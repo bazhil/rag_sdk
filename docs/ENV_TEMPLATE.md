@@ -116,7 +116,7 @@ GIGA_CHAT_MODEL=GigaChat-2
 
 ### Windows PowerShell:
 ```powershell
-.\start.ps1
+.\scripts\start.ps1
 ```
 
 ### Вручную:

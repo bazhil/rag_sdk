@@ -41,8 +41,10 @@ RAG/
 |------|------------|
 | `LICENSE` | MIT лицензия |
 | `Makefile` | Команды для управления проектом |
-| `start.ps1` | PowerShell скрипт запуска (Windows) |
-| `stop.ps1` | PowerShell скрипт остановки (Windows) |
+| `scripts/start.ps1` | PowerShell скрипт запуска (Windows) |
+| `scripts/docker-build.sh` | Bash скрипт сборки с автоматической инициализацией submodules (Linux/Mac) |
+| `scripts/docker-build.ps1` | PowerShell скрипт сборки с автоматической инициализацией submodules (Windows) |
+| `scripts/stop.ps1` | PowerShell скрипт остановки (Windows) |
 | `example_usage.py` | Пример использования SDK |
 
 ## SDK (RAG/)

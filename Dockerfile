@@ -11,10 +11,15 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY llm_manager/requirements.txt ./llm_manager_requirements.txt
-RUN pip install --no-cache-dir -r llm_manager_requirements.txt
-
 COPY . .
+
+RUN if [ ! -f "llm_manager/requirements.txt" ]; then \
+        echo "ERROR: llm_manager submodule not initialized!"; \
+        echo "Please run: git submodule update --init --recursive"; \
+        exit 1; \
+    fi
+
+RUN pip install --no-cache-dir -r llm_manager/requirements.txt
 
 EXPOSE 8000
 

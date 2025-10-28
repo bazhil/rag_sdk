@@ -1,19 +1,33 @@
-.PHONY: help build up down logs clean install test
+.PHONY: help build up down logs clean install test init-submodules
 
 help:
 	@echo "RAG SDK - Makefile команды"
 	@echo ""
-	@echo "  make build    - Собрать Docker образы"
-	@echo "  make up       - Запустить сервисы"
-	@echo "  make down     - Остановить сервисы"
-	@echo "  make logs     - Показать логи"
-	@echo "  make clean    - Удалить все данные (включая volumes)"
-	@echo "  make install  - Установить зависимости локально"
-	@echo "  make test     - Запустить тесты"
-	@echo "  make restart  - Перезапустить сервисы"
+	@echo "  make init-submodules - Инициализировать git submodules"
+	@echo "  make build           - Собрать Docker образы"
+	@echo "  make up              - Запустить сервисы"
+	@echo "  make build-up        - Инициализировать submodules и собрать с запуском"
+	@echo "  make down            - Остановить сервисы"
+	@echo "  make logs            - Показать логи"
+	@echo "  make clean           - Удалить все данные (включая volumes)"
+	@echo "  make install         - Установить зависимости локально"
+	@echo "  make test            - Запустить тесты"
+	@echo "  make restart         - Перезапустить сервисы"
 
-build:
+init-submodules:
+	@echo "Проверка и инициализация submodules..."
+	@if [ ! -f "llm_manager/requirements.txt" ]; then \
+		echo "Инициализация submodule llm_manager..."; \
+		git submodule update --init --recursive; \
+	else \
+		echo "Submodules уже инициализированы"; \
+	fi
+
+build: init-submodules
 	docker compose build
+
+build-up: init-submodules
+	docker compose up --build -d
 
 up:
 	docker compose up -d
@@ -29,7 +43,7 @@ clean:
 	rm -rf uploads/*
 	rm -f *.log
 
-install:
+install: init-submodules
 	pip install -r requirements.txt
 	pip install -r llm_manager/requirements.txt
 

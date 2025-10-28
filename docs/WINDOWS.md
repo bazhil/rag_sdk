@@ -338,7 +338,7 @@ cd /mnt/c/Users/YourName/Documents
 
 ## PowerShell скрипты
 
-### Автоматический запуск (start.ps1)
+### Автоматический запуск (scripts/start.ps1)
 
 ```powershell
 Write-Host "Запуск RAG SDK..." -ForegroundColor Green
@@ -356,7 +356,7 @@ Write-Host "RAG SDK запущен!" -ForegroundColor Green
 Write-Host "Откройте http://localhost:8000" -ForegroundColor Cyan
 ```
 
-### Остановка (stop.ps1)
+### Остановка (scripts/stop.ps1)
 
 ```powershell
 Write-Host "Остановка RAG SDK..." -ForegroundColor Yellow
@@ -367,8 +367,8 @@ Write-Host "RAG SDK остановлен." -ForegroundColor Green
 Запуск скриптов:
 
 ```powershell
-.\start.ps1
-.\stop.ps1
+.\scripts\start.ps1
+.\scripts\stop.ps1
 ```
 
 ## Visual Studio Code
