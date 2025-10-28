@@ -30,8 +30,8 @@ Python SDK для создания систем RAG (Retrieval-Augmented Generat
 ## Структура проекта
 
 ```
-rag_sdk/
-├── rag_sdk/                    # Основной SDK (можно импортировать в других проектах)
+RAG/
+├── RAG/                        # Основной SDK (можно импортировать в других проектах)
 │   ├── __init__.py
 │   ├── config.py               # Конфигурация
 │   ├── vector_store.py         # Работа с PostgreSQL + pgvector
@@ -61,8 +61,8 @@ rag_sdk/
 ### 1. Клонирование репозитория с submodule
 
 ```bash
-git clone --recurse-submodules https://github.com/yourusername/rag_sdk.git
-cd rag_sdk
+git clone --recurse-submodules https://github.com/yourusername/RAG.git
+cd RAG
 ```
 
 Если уже клонировали без submodule:
@@ -103,7 +103,7 @@ docker compose up --build
 ### Базовый пример
 
 ```python
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def main():
     rag = RAGManager()
@@ -269,9 +269,9 @@ SDK можно использовать как библиотеку в друг�
 
 ```python
 import sys
-sys.path.insert(0, 'path/to/rag_sdk')
+sys.path.insert(0, 'path/to/RAG')
 
-from rag_sdk import RAGManager, VectorStore, DocumentProcessor
+from RAG import RAGManager, VectorStore, DocumentProcessor
 
 rag = RAGManager()
 ```
@@ -279,7 +279,7 @@ rag = RAGManager()
 Или установить как пакет:
 
 ```bash
-pip install -e path/to/rag_sdk
+pip install -e path/to/RAG
 ```
 
 ## Лицензия

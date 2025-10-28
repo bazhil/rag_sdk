@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from rag_sdk import RAGManager
+from RAG import RAGManager
 from .models import QueryRequest, QueryResponse, DocumentResponse
 
 

@@ -14,7 +14,7 @@
 
 ```bash
 git clone --recurse-submodules <repository-url>
-cd rag_sdk
+cd RAG
 ```
 
 Если уже клонировали без submodule:
@@ -77,7 +77,7 @@ docker compose up --build
 
 ```bash
 git clone --recurse-submodules <repository-url>
-cd rag_sdk
+cd RAG
 ```
 
 2. **Создайте виртуальное окружение**
@@ -251,7 +251,7 @@ curl -X POST http://localhost:8000/api/chat \
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def main():
     rag = RAGManager()

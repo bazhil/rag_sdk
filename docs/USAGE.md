@@ -225,7 +225,7 @@ Content-Type: application/json
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def main():
     rag = RAGManager()
@@ -314,7 +314,7 @@ print("Документ удален")
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def process_pdf():
     rag = RAGManager()
@@ -345,7 +345,7 @@ asyncio.run(process_pdf())
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def multi_document_search():
     rag = RAGManager()
@@ -383,7 +383,7 @@ asyncio.run(multi_document_search())
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def batch_questions():
     rag = RAGManager()
@@ -418,7 +418,7 @@ asyncio.run(batch_questions())
 
 ```python
 import asyncio
-from rag_sdk import VectorStore, EmbeddingModel, DocumentProcessor
+from RAG import VectorStore, EmbeddingModel, DocumentProcessor
 
 async def low_level_usage():
     vector_store = VectorStore()
@@ -464,7 +464,7 @@ asyncio.run(low_level_usage())
 
 ```python
 from fastapi import FastAPI, HTTPException
-from rag_sdk import RAGManager
+from RAG import RAGManager
 from contextlib import asynccontextmanager
 
 rag_manager = RAGManager()

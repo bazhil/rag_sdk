@@ -25,7 +25,7 @@
 
 ```powershell
 git clone --recurse-submodules <repository-url>
-cd rag_sdk
+cd RAG
 ```
 
 ### 2. Настройка переменных окружения
@@ -207,7 +207,7 @@ Invoke-RestMethod -Uri "http://localhost:8000/api/chat" `
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def main():
     rag = RAGManager()
@@ -325,7 +325,7 @@ cd /mnt/c/Users/YourName/Documents
 Доступ к файлам WSL из Windows:
 
 ```
-\\wsl$\Ubuntu\home\username\rag_sdk
+\\wsl$\Ubuntu\home\username\RAG
 ```
 
 ## Антивирус и брандмауэр

@@ -7,13 +7,13 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="rag_sdk",
+    name="RAG",
     version="1.0.0",
     author="Your Name",
     description="Python SDK for RAG with PostgreSQL vector storage",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/bazhil/rag_sdk",
+    url="https://github.com/bazhil/RAG",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

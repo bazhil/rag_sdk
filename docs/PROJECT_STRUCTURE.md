@@ -3,9 +3,9 @@
 ## Корневая директория
 
 ```
-rag_sdk/
+RAG/
 ├── app/                        # FastAPI приложение
-├── rag_sdk/                    # Основной SDK (переиспользуемый)
+├── RAG/                        # Основной SDK (переиспользуемый)
 ├── llm_manager/                # Git submodule для работы с LLM
 ├── uploads/                    # Загруженные файлы
 ├── docker-compose.yml          # Docker Compose конфигурация
@@ -45,12 +45,12 @@ rag_sdk/
 | `stop.ps1` | PowerShell скрипт остановки (Windows) |
 | `example_usage.py` | Пример использования SDK |
 
-## SDK (rag_sdk/)
+## SDK (RAG/)
 
 ### Структура
 
 ```
-rag_sdk/
+RAG/
 ├── __init__.py              # Экспорт главных классов
 ├── config.py                # Конфигурация (Settings)
 ├── rag_manager.py           # Главный класс RAGManager
@@ -64,7 +64,7 @@ rag_sdk/
 #### `__init__.py`
 Экспортирует главные классы для импорта:
 ```python
-from rag_sdk import RAGManager, VectorStore, DocumentProcessor
+from RAG import RAGManager, VectorStore, DocumentProcessor
 ```
 
 #### `config.py`
@@ -369,17 +369,17 @@ CHUNK_OVERLAP=50
 
 ```python
 import sys
-sys.path.insert(0, '/path/to/rag_sdk')
+sys.path.insert(0, '/path/to/RAG')
 
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 # Или установить как пакет
-# pip install -e /path/to/rag_sdk
+# pip install -e /path/to/RAG
 ```
 
 ### Как добавить новый формат файла
 
-1. Открыть `rag_sdk/document_processor.py`
+1. Открыть `RAG/document_processor.py`
 2. Добавить метод `_extract_from_new_format()`
 3. Добавить расширение в `extract_text_from_file()`
 

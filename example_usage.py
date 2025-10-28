@@ -1,5 +1,5 @@
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 
 async def main():

@@ -59,7 +59,7 @@
 [API] ========================================
 ```
 
-### 2. RAG Manager (`rag_sdk/rag_manager.py`)
+### 2. RAG Manager (`RAG/rag_manager.py`)
 
 #### Инициализация
 ```
@@ -132,7 +132,7 @@
 [RAG_MANAGER] ================================================================================
 ```
 
-### 3. Vector Store (`rag_sdk/vector_store.py`)
+### 3. Vector Store (`RAG/vector_store.py`)
 
 #### Подключение к БД
 ```
@@ -168,7 +168,7 @@
 [VECTOR_STORE] Document ID=1 deleted (including all chunks)
 ```
 
-### 4. Embeddings (`rag_sdk/embeddings.py`)
+### 4. Embeddings (`RAG/embeddings.py`)
 
 #### Загрузка модели
 ```
@@ -186,7 +186,7 @@
 [EMBEDDINGS] Generated 15 embeddings
 ```
 
-### 5. Document Processor (`rag_sdk/document_processor.py`)
+### 5. Document Processor (`RAG/document_processor.py`)
 
 #### Извлечение текста
 ```

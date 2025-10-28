@@ -7,8 +7,8 @@
 ### Шаг 1: Клонирование
 
 ```bash
-git clone --recurse-submodules https://github.com/yourusername/rag_sdk.git
-cd rag_sdk
+git clone --recurse-submodules https://github.com/yourusername/RAG.git
+cd RAG
 ```
 
 ### Шаг 2: Настройка LLM провайдера
@@ -95,7 +95,7 @@ curl -X POST http://localhost:8000/api/chat \
 
 ```python
 import asyncio
-from rag_sdk import RAGManager
+from RAG import RAGManager
 
 async def main():
     rag = RAGManager()
