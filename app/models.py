@@ -30,3 +30,14 @@ class DocumentResponse(BaseModel):
     metadata: Dict[str, Any]
     chunk_count: int
 
+
+class SummaryRequest(BaseModel):
+    document_id: int
+
+
+class SummaryResponse(BaseModel):
+    summary: str
+    document_id: int
+    filename: str
+    chunk_count: int
+

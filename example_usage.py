@@ -21,6 +21,13 @@ async def main():
         if documents:
             document_id = documents[0]['id']
             
+            print(f"\n=== Суммаризация документа {document_id} ===")
+            summary_result = await rag.summarize_document(document_id)
+            
+            print(f"\nДокумент: {summary_result['filename']}")
+            print(f"Фрагментов: {summary_result['chunk_count']}")
+            print(f"\nКраткое содержание:\n{summary_result['summary']}")
+            
             print(f"\n=== Поиск в документе {document_id} ===")
             query = "Расскажи о основных темах в документе"
             

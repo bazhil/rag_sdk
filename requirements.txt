@@ -20,3 +20,7 @@ beautifulsoup4==4.12.3
 chardet==5.2.0
 aiohttp==3.11.7
 
+# Автоматическое определение языка и кросс-языковой поиск
+langdetect==1.0.9
+deep-translator==1.11.4
+

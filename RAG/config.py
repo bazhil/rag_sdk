@@ -20,7 +20,13 @@ class Settings(BaseSettings):
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o-mini"
     
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # Мультиязычная модель для работы с русским и английским
+    # Другие рекомендуемые модели:
+    # - "sentence-transformers/paraphrase-multilingual-mpnet-base-v2" (лучшее качество, 768 dim)
+    # - "sentence-transformers/distiluse-base-multilingual-cased-v2" (быстрее, 512 dim)
+    # - "intfloat/multilingual-e5-large" (отличное качество, 1024 dim)
+    # - "cointegrated/rubert-tiny2" (русский + английский, быстрая, 312 dim)
+    embedding_model: str = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
     chunk_size: int = 500
     chunk_overlap: int = 50
     

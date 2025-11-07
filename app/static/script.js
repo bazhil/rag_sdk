@@ -221,12 +221,19 @@ async function sendMessage() {
     input.value = '';
     input.style.height = 'auto';
     
+    // Проверяем, является ли запрос командой суммаризации
+    if (query.toLowerCase() === 'summary' || query.toLowerCase() === 'суммаризация') {
+        await handleSummarization();
+        sendBtn.disabled = false;
+        return;
+    }
+    
     const loadingMessage = addMessage('Думаю...', 'assistant', true);
     
     try {
         const requestBody = {
-            query: query,
-            context_limit: 3
+            query: query
+            // context_limit не передаем - будет использовано значение по умолчанию из настроек (7)
         };
         
         if (searchMode === 'selected' && selectedDocumentId) {
@@ -257,6 +264,48 @@ async function sendMessage() {
         showNotification(`Ошибка: ${error.message}`, 'error');
     } finally {
         sendBtn.disabled = false;
+    }
+}
+
+async function handleSummarization() {
+    if (!selectedDocumentId) {
+        addMessage('⚠️ Пожалуйста, выберите документ для суммаризации.', 'assistant');
+        showNotification('Выберите документ из списка слева', 'error');
+        return;
+    }
+    
+    const loadingMessage = addMessage('Генерирую краткое содержание документа...', 'assistant', true);
+    
+    try {
+        const response = await fetch('/api/summarize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                document_id: selectedDocumentId
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Ошибка при суммаризации');
+        }
+        
+        const result = await response.json();
+        
+        loadingMessage.remove();
+        
+        // Добавляем заголовок с информацией о документе
+        const summaryWithHeader = `## 📄 Краткое содержание документа\n\n**Документ:** ${result.filename}\n**Фрагментов:** ${result.chunk_count}\n\n---\n\n${result.summary}`;
+        
+        addMessage(summaryWithHeader, 'assistant');
+        showNotification('Суммаризация завершена', 'success');
+        
+    } catch (error) {
+        loadingMessage.remove();
+        addMessage(`❌ Ошибка при суммаризации: ${error.message}`, 'assistant');
+        showNotification(`Ошибка: ${error.message}`, 'error');
     }
 }
 

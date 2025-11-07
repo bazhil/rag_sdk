@@ -152,4 +152,29 @@ class VectorStore:
         async with self.pool.acquire() as conn:
             await conn.execute("DELETE FROM documents WHERE id = $1", document_id)
             print(f"[VECTOR_STORE] Document ID={document_id} deleted (including all chunks)")
+    
+    async def get_document_chunks(self, document_id: int) -> List[Dict[str, Any]]:
+        """
+        Получить все чанки указанного документа.
+        
+        Args:
+            document_id: ID документа
+            
+        Returns:
+            List[Dict]: Список чанков с полями: id, content, chunk_index, metadata
+        """
+        print(f"[VECTOR_STORE] Getting all chunks for document ID={document_id}")
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT id, content, chunk_index, metadata
+                FROM chunks
+                WHERE document_id = $1
+                ORDER BY chunk_index
+                """,
+                document_id
+            )
+            chunks = [dict(row) for row in rows]
+            print(f"[VECTOR_STORE] Retrieved {len(chunks)} chunks")
+            return chunks
 

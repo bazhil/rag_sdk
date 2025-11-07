@@ -8,6 +8,7 @@ from .vector_store import VectorStore
 from .embeddings import EmbeddingModel
 from .document_processor import DocumentProcessor
 from .config import settings
+from .language_detector import get_language_detector
 
 
 class RAGManager:
@@ -17,8 +18,9 @@ class RAGManager:
         self.vector_store = VectorStore()
         self.embedding_model = EmbeddingModel()
         self.document_processor = DocumentProcessor()
+        self.language_detector = get_language_detector()
         self._llm = None
-        print("[RAG_MANAGER] RAGManager initialized")
+        print("[RAG_MANAGER] RAGManager initialized with auto language detection")
         
     async def initialize(self):
         print("[RAG_MANAGER] Starting initialization...")
@@ -52,6 +54,10 @@ class RAGManager:
         chunks = self.document_processor.split_text_into_chunks(text)
         print(f"[RAG_MANAGER] Split into {len(chunks)} chunks")
         
+        # Автоматическое определение языка документа
+        document_lang = self.language_detector.detect_document_language(chunks)
+        print(f"[RAG_MANAGER] Auto-detected document language: {document_lang or 'unknown'}")
+        
         embeddings = self.embedding_model.encode_batch(chunks)
         print(f"[RAG_MANAGER] Generated {len(embeddings)} embeddings")
         
@@ -59,7 +65,10 @@ class RAGManager:
         document_id = await self.vector_store.create_document(
             filename=filename,
             file_size=file_size,
-            metadata={'chunks_count': len(chunks)}
+            metadata={
+                'chunks_count': len(chunks),
+                'language': document_lang  # Сохраняем язык в метаданных
+            }
         )
         print(f"[RAG_MANAGER] Created document record: ID={document_id}")
         
@@ -75,21 +84,63 @@ class RAGManager:
         min_similarity = min_similarity if min_similarity is not None else settings.min_similarity
         print(f"[RAG_MANAGER] Search query: '{query[:100]}...' | doc_id: {document_id} | limit: {limit}")
         
-        query_embedding = self.embedding_model.encode(query)
-        print(f"[RAG_MANAGER] Generated query embedding: {len(query_embedding)} dimensions")
+        # Автоматическое определение языка запроса
+        query_lang = self.language_detector.detect_language(query)
+        print(f"[RAG_MANAGER] Auto-detected query language: {query_lang or 'unknown'}")
         
-        results = await self.vector_store.search_similar(
-            query_embedding=query_embedding,
-            document_id=document_id,
-            limit=limit * 2
-        )
+        # Получаем язык документа(ов) если задан конкретный документ
+        document_lang = None
+        if document_id:
+            doc = await self.vector_store.get_document(document_id)
+            if doc and doc.get('metadata'):
+                document_lang = doc['metadata'].get('language')
+                print(f"[RAG_MANAGER] Document language: {document_lang or 'unknown'}")
         
+        # Определяем, нужен ли перевод для улучшения поиска
+        queries_to_search = [query]  # Всегда ищем по оригинальному запросу
+        
+        if query_lang and document_lang and query_lang != document_lang:
+            # Кросс-языковой запрос обнаружен - пробуем перевести
+            print(f"[RAG_MANAGER] Cross-lingual search detected ({query_lang} -> {document_lang})")
+            translated_query = self.language_detector.translate_text(query, document_lang)
+            
+            if translated_query and translated_query != query:
+                queries_to_search.append(translated_query)
+                print(f"[RAG_MANAGER] Will search with {len(queries_to_search)} query variants")
+        
+        # Выполняем поиск по всем вариантам запроса
+        all_results = []
+        seen_chunks = set()  # Для дедупликации
+        
+        for i, search_query in enumerate(queries_to_search):
+            print(f"[RAG_MANAGER] Searching with query variant {i+1}/{len(queries_to_search)}")
+            
+            query_embedding = self.embedding_model.encode(search_query)
+            print(f"[RAG_MANAGER] Generated query embedding: {len(query_embedding)} dimensions")
+            
+            results = await self.vector_store.search_similar(
+                query_embedding=query_embedding,
+                document_id=document_id,
+                limit=limit * 2
+            )
+            
+            # Добавляем результаты, избегая дубликатов
+            for result in results:
+                chunk_id = result.get('id')
+                if chunk_id not in seen_chunks:
+                    seen_chunks.add(chunk_id)
+                    all_results.append(result)
+        
+        # Сортируем все результаты по similarity
+        all_results.sort(key=lambda x: x.get('similarity', 0), reverse=True)
+        
+        # Фильтруем по минимальной similarity
         filtered_results = [
-            result for result in results 
+            result for result in all_results 
             if result.get('similarity', 0) >= min_similarity
         ]
         
-        print(f"[RAG_MANAGER] Search results: {len(results)} total → {len(filtered_results)} after filtering (min_similarity: {min_similarity})")
+        print(f"[RAG_MANAGER] Search results: {len(all_results)} total → {len(filtered_results)} after filtering (min_similarity: {min_similarity})")
         for i, result in enumerate(filtered_results[:limit], 1):
             print(f"[RAG_MANAGER]   Top {i}: {result['filename']} (similarity: {result['similarity']:.2%})")
         
@@ -186,4 +237,97 @@ class RAGManager:
         
     async def delete_document(self, document_id: int):
         await self.vector_store.delete_document(document_id)
+    
+    async def summarize_document(self, document_id: int) -> Dict[str, Any]:
+        """
+        Генерирует краткое содержание (суммаризацию) указанного документа.
+        
+        Args:
+            document_id: ID документа для суммаризации
+            
+        Returns:
+            Dict с полями: summary, document_id, filename, chunk_count
+        """
+        print(f"\n{'='*80}")
+        print(f"[RAG_MANAGER] ========== SUMMARIZE DOCUMENT START ==========")
+        print(f"[RAG_MANAGER] Document ID: {document_id}")
+        print(f"{'='*80}")
+        
+        # Получаем информацию о документе
+        document = await self.vector_store.get_document(document_id)
+        if not document:
+            raise ValueError(f"Документ с ID {document_id} не найден")
+        
+        print(f"[RAG_MANAGER] Document: {document['filename']}")
+        print(f"[RAG_MANAGER] Chunk count: {document['chunk_count']}")
+        
+        # Получаем все чанки документа
+        chunks = await self.vector_store.get_document_chunks(document_id)
+        print(f"[RAG_MANAGER] Retrieved {len(chunks)} chunks")
+        
+        if not chunks:
+            return {
+                'summary': 'Документ не содержит текстовых данных для суммаризации.',
+                'document_id': document_id,
+                'filename': document['filename'],
+                'chunk_count': 0
+            }
+        
+        # Объединяем чанки в текст (сортируем по chunk_index)
+        sorted_chunks = sorted(chunks, key=lambda x: x.get('chunk_index', 0))
+        full_text = '\n\n'.join([chunk['content'] for chunk in sorted_chunks])
+        
+        print(f"[RAG_MANAGER] Full text length: {len(full_text)} chars, {len(full_text.split())} words")
+        
+        # Если текст слишком большой, берем первые N символов для суммаризации
+        max_chars = 15000  # Ограничение для LLM
+        if len(full_text) > max_chars:
+            print(f"[RAG_MANAGER] Text too long, truncating to {max_chars} chars")
+            text_for_summary = full_text[:max_chars] + "\n\n[... текст обрезан ...]"
+        else:
+            text_for_summary = full_text
+        
+        # Создаем промпт для суммаризации
+        prompt = f"""Создай краткое содержание (суммаризацию) следующего документа.
+
+ТРЕБОВАНИЯ К СУММАРИЗАЦИИ:
+1. Начни с общего описания в 2-3 предложениях
+2. Выдели основные темы и разделы документа
+3. Используй маркированные списки для перечисления ключевых пунктов
+4. Выдели важные термины и понятия жирным шрифтом (**термин**)
+5. Структурируй информацию с использованием заголовков
+6. Сохрани последовательность изложения как в оригинале
+7. Укажи ключевые выводы или заключения, если они есть
+8. Не добавляй информацию, которой нет в тексте
+
+ДОКУМЕНТ: {document['filename']}
+
+ТЕКСТ ДОКУМЕНТА:
+{text_for_summary}
+
+КРАТКОЕ СОДЕРЖАНИЕ:"""
+        
+        print(f"[RAG_MANAGER] Prompt length: {len(prompt)} chars")
+        
+        # Получаем ответ от LLM
+        llm = self._get_llm()
+        print(f"[RAG_MANAGER] Calling LLM: {llm.__class__.__name__}")
+        summary = await llm.get_response("", prompt)
+        
+        print(f"\n[RAG_MANAGER] {'='*80}")
+        print(f"[RAG_MANAGER] SUMMARY GENERATED:")
+        print(f"[RAG_MANAGER] {'-'*80}")
+        print(summary)
+        print(f"[RAG_MANAGER] {'-'*80}")
+        print(f"[RAG_MANAGER] Summary length: {len(summary)} chars, {len(summary.split())} words")
+        print(f"[RAG_MANAGER] {'='*80}\n")
+        
+        print(f"[RAG_MANAGER] ========== SUMMARIZE DOCUMENT COMPLETE ==========\n")
+        
+        return {
+            'summary': summary,
+            'document_id': document_id,
+            'filename': document['filename'],
+            'chunk_count': len(chunks)
+        }
 

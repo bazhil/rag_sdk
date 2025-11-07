@@ -8,7 +8,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from RAG import RAGManager
-from .models import QueryRequest, QueryResponse, DocumentResponse
+from .models import QueryRequest, QueryResponse, DocumentResponse, SummaryRequest, SummaryResponse
 
 
 # Логирование переменных окружения при запуске
@@ -198,6 +198,27 @@ async def search(request: QueryRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ошибка при поиске: {str(e)}")
+
+
+@app.post("/api/summarize", response_model=SummaryResponse)
+async def summarize_document(request: SummaryRequest):
+    print(f"\n[API] ========== SUMMARIZE REQUEST ==========")
+    print(f"[API] Document ID: {request.document_id}")
+    try:
+        result = await rag_manager.summarize_document(request.document_id)
+        
+        print(f"[API] Summarization successful")
+        print(f"[API] ========================================\n")
+        return SummaryResponse(**result)
+        
+    except ValueError as e:
+        print(f"[API] ERROR: {str(e)}")
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        import traceback
+        error_detail = f"Ошибка при суммаризации документа: {str(e)}\n{traceback.format_exc()}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=f"Ошибка при суммаризации документа: {str(e)}")
 
 
 @app.get("/health")

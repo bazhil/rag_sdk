@@ -63,6 +63,27 @@
   - Имени файла
   - Процента совпадения (релевантности)
 
+### Суммаризация документа
+
+**Для получения краткого содержания документа:**
+
+1. Выберите документ из списка слева (кликните на него)
+2. Введите команду: `summary` или `суммаризация`
+3. Система автоматически создаст структурированное краткое содержание документа
+
+**Результат включает:**
+- Название документа
+- Количество фрагментов
+- Структурированное краткое содержание с:
+  - Общим описанием документа
+  - Основными темами и разделами
+  - Ключевыми терминами и понятиями
+  - Выводами (если есть)
+
+> **Примечание:** Для суммаризации необходимо предварительно выбрать документ. Команда `summary` без выбранного документа покажет предупреждение.
+
+Подробнее см. [документацию по суммаризации](SUMMARIZATION.md).
+
 ## REST API
 
 ### Документы
@@ -219,6 +240,42 @@ Content-Type: application/json
 }
 ```
 
+#### Суммаризация документа
+
+```http
+POST /api/summarize
+Content-Type: application/json
+
+{
+  "document_id": 1
+}
+```
+
+**Ответ:**
+```json
+{
+  "summary": "# Общее описание\n\nДокумент содержит информацию о...\n\n## Основные темы\n\n- Тема 1\n- Тема 2\n...",
+  "document_id": 1,
+  "filename": "document.pdf",
+  "chunk_count": 42
+}
+```
+
+**Поля ответа:**
+- `summary` - краткое содержание в формате Markdown
+- `document_id` - ID документа
+- `filename` - имя файла
+- `chunk_count` - количество фрагментов в документе
+
+**Пример с curl:**
+```bash
+curl -X POST "http://localhost:8000/api/summarize" \
+  -H "Content-Type: application/json" \
+  -d '{"document_id": 1}'
+```
+
+См. подробную документацию: [Суммаризация документов](SUMMARIZATION.md)
+
 ## Использование SDK в коде
 
 ### Базовая настройка
@@ -300,6 +357,33 @@ print("Источники:")
 for source in result['sources']:
     print(f"  - {source['filename']} ({source['similarity']:.2%})")
 ```
+
+### Суммаризация документа
+
+```python
+# Получить краткое содержание документа
+summary_result = await rag.summarize_document(document_id=1)
+
+print(f"Документ: {summary_result['filename']}")
+print(f"Фрагментов: {summary_result['chunk_count']}")
+print(f"\nКраткое содержание:\n{summary_result['summary']}")
+```
+
+**Пример обработки всех документов:**
+
+```python
+documents = await rag.get_documents()
+
+for doc in documents:
+    print(f"\n{'='*60}")
+    print(f"Суммаризация: {doc['filename']}")
+    print('='*60)
+    
+    summary = await rag.summarize_document(doc['id'])
+    print(summary['summary'])
+```
+
+См. полную документацию: [Суммаризация документов](SUMMARIZATION.md)
 
 ### Удаление документа
 
