@@ -8,7 +8,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from RAG import RAGManager
-from .models import QueryRequest, QueryResponse, DocumentResponse, SummaryRequest, SummaryResponse
+from .models import QueryRequest, QueryResponse, DocumentResponse, SummaryRequest, SummaryResponse, ReferatRequest, ReferatResponse
 
 
 # Логирование переменных окружения при запуске
@@ -38,10 +38,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RAG SDK API", version="1.0.0", lifespan=lifespan)
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
+# Создаем директории ДО монтирования StaticFiles
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+REFERAT_DIR = Path("referats")
+REFERAT_DIR.mkdir(exist_ok=True)
+
+# Монтируем статические файлы ПОСЛЕ создания директорий
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/referats", StaticFiles(directory="referats"), name="referats")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -219,6 +225,31 @@ async def summarize_document(request: SummaryRequest):
         error_detail = f"Ошибка при суммаризации документа: {str(e)}\n{traceback.format_exc()}"
         print(error_detail)
         raise HTTPException(status_code=500, detail=f"Ошибка при суммаризации документа: {str(e)}")
+
+
+@app.post("/api/referat", response_model=ReferatResponse)
+async def create_referat(request: ReferatRequest):
+    print(f"\n[API] ========== REFERAT REQUEST ==========")
+    print(f"[API] Document ID: {request.document_id}")
+    try:
+        result = await rag_manager.create_referat(
+            document_id=request.document_id,
+            output_dir="referats"
+        )
+        
+        print(f"[API] Referat created successfully")
+        print(f"[API] PDF URL: {result['pdf_url']}")
+        print(f"[API] ========================================\n")
+        return ReferatResponse(**result)
+        
+    except ValueError as e:
+        print(f"[API] ERROR: {str(e)}")
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        import traceback
+        error_detail = f"Ошибка при создании реферативного перевода: {str(e)}\n{traceback.format_exc()}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=f"Ошибка при создании реферативного перевода: {str(e)}")
 
 
 @app.get("/health")

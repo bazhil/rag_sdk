@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     git \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

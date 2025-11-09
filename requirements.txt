@@ -24,3 +24,7 @@ aiohttp==3.11.7
 langdetect==1.0.9
 deep-translator==1.11.4
 
+# Генерация PDF для реферативных переводов
+reportlab==4.0.7
+markdown2==2.4.12
+

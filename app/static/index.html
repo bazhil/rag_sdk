@@ -51,6 +51,7 @@
                             <li>Выберите документ для целевого поиска или используйте все документы</li>
                             <li>Задавайте вопросы и получайте ответы на основе загруженных документов</li>
                             <li><strong>Введите "summary"</strong> после выбора документа для получения его краткого содержания</li>
+                            <li><strong>Введите "referat"</strong> после выбора документа для создания реферативного перевода с PDF</li>
                         </ul>
                     </div>
                 </div>
@@ -78,11 +79,23 @@
     <script>
         // Настройка marked.js
         if (typeof marked !== 'undefined') {
+            // Настройка рендерера для ссылок
+            const renderer = new marked.Renderer();
+            
+            // Переопределяем рендеринг ссылок - делаем их кликабельными
+            renderer.link = function(href, title, text) {
+                const titleAttr = title ? ` title="${title}"` : '';
+                // Если ссылка начинается с http или /, открываем в новой вкладке
+                const target = (href.startsWith('http') || href.startsWith('/')) ? ' target="_blank" rel="noopener noreferrer"' : '';
+                return `<a href="${href}"${titleAttr}${target} class="markdown-link">${text}</a>`;
+            };
+            
             marked.setOptions({
                 breaks: true,
-                gfm: true
+                gfm: true,
+                renderer: renderer
             });
-            console.log('Marked.js loaded successfully');
+            console.log('Marked.js loaded successfully with custom renderer');
         } else {
             console.error('Marked.js failed to load');
         }

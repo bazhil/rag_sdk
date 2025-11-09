@@ -217,6 +217,12 @@ async function sendMessage() {
     const sendBtn = document.getElementById('sendBtn');
     sendBtn.disabled = true;
     
+    // Отладочное логирование
+    console.log('[DEBUG] Query:', query);
+    console.log('[DEBUG] Query lowercase:', query.toLowerCase());
+    console.log('[DEBUG] Query length:', query.length);
+    console.log('[DEBUG] Checking referat:', query.toLowerCase() === 'referat', query.toLowerCase() === 'реферат');
+    
     addMessage(query, 'user');
     input.value = '';
     input.style.height = 'auto';
@@ -224,6 +230,13 @@ async function sendMessage() {
     // Проверяем, является ли запрос командой суммаризации
     if (query.toLowerCase() === 'summary' || query.toLowerCase() === 'суммаризация') {
         await handleSummarization();
+        sendBtn.disabled = false;
+        return;
+    }
+    
+    // Проверяем, является ли запрос командой реферативного перевода
+    if (query.toLowerCase() === 'referat' || query.toLowerCase() === 'реферат') {
+        await handleReferat();
         sendBtn.disabled = false;
         return;
     }
@@ -305,6 +318,63 @@ async function handleSummarization() {
     } catch (error) {
         loadingMessage.remove();
         addMessage(`❌ Ошибка при суммаризации: ${error.message}`, 'assistant');
+        showNotification(`Ошибка: ${error.message}`, 'error');
+    }
+}
+
+async function handleReferat() {
+    if (!selectedDocumentId) {
+        addMessage('⚠️ Пожалуйста, выберите документ для создания реферативного перевода.', 'assistant');
+        showNotification('Выберите документ из списка слева', 'error');
+        return;
+    }
+    
+    const loadingMessage = addMessage('⏳ Создаю реферативный перевод документа...\n\nЭто может занять несколько минут для больших документов.', 'assistant', true);
+    
+    try {
+        const response = await fetch('/api/referat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                document_id: selectedDocumentId
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Ошибка при создании реферативного перевода');
+        }
+        
+        const result = await response.json();
+        
+        loadingMessage.remove();
+        
+        // Формируем полный URL для скачивания PDF с правильным кодированием
+        let fullPdfUrl;
+        if (result.pdf_url.startsWith('http')) {
+            fullPdfUrl = result.pdf_url;
+        } else {
+            // Разбиваем путь на части и кодируем каждую часть отдельно
+            const pathParts = result.pdf_url.split('/').filter(p => p.length > 0);
+            const encodedParts = pathParts.map(part => encodeURIComponent(part));
+            const encodedPath = '/' + encodedParts.join('/');
+            fullPdfUrl = `${window.location.origin}${encodedPath}`;
+        }
+        
+        console.log('PDF URL:', result.pdf_url);
+        console.log('Full PDF URL:', fullPdfUrl);
+        
+        // Добавляем сообщение с ссылкой на скачивание PDF
+        const referatMessage = `## 📚 Реферативный перевод документа\n\n**Документ:** ${result.filename}\n**Фрагментов:** ${result.chunk_count}\n\n✅ **Реферативный перевод успешно создан!**\n\n📥 [**Скачать PDF**](${fullPdfUrl})\n\n---\n\n### Предпросмотр:\n\n${result.referat.substring(0, 500)}...\n\n*[Полный текст доступен в PDF файле]*`;
+        
+        addMessage(referatMessage, 'assistant');
+        showNotification('Реферативный перевод готов! Файл доступен для скачивания.', 'success');
+        
+    } catch (error) {
+        loadingMessage.remove();
+        addMessage(`❌ Ошибка при создании реферативного перевода: ${error.message}`, 'assistant');
         showNotification(`Ошибка: ${error.message}`, 'error');
     }
 }

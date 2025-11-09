@@ -41,3 +41,15 @@ class SummaryResponse(BaseModel):
     filename: str
     chunk_count: int
 
+
+class ReferatRequest(BaseModel):
+    document_id: int
+
+
+class ReferatResponse(BaseModel):
+    referat: str
+    document_id: int
+    filename: str
+    chunk_count: int
+    pdf_url: str  # URL для скачивания PDF
+
