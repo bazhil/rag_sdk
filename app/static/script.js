@@ -1,5 +1,6 @@
 let selectedDocumentId = null;
 let searchMode = 'all';
+let currentMode = 'rag'; // 'rag' or 'web'
 
 document.addEventListener('DOMContentLoaded', function() {
     loadDocuments();
@@ -30,6 +31,33 @@ function setupEventListeners() {
             updateSelectedDocInfo();
         });
     });
+    
+    // Mode toggle buttons
+    document.getElementById('ragModeBtn').addEventListener('click', () => switchMode('rag'));
+    document.getElementById('webModeBtn').addEventListener('click', () => switchMode('web'));
+}
+
+function switchMode(mode) {
+    currentMode = mode;
+    
+    // Update button states
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (mode === 'rag') {
+        document.getElementById('ragModeBtn').classList.add('active');
+        document.getElementById('ragOptions').style.display = 'block';
+        document.getElementById('documentList').style.display = 'flex';
+        document.getElementById('chatInput').placeholder = 'Введите ваш вопрос...';
+    } else {
+        document.getElementById('webModeBtn').classList.add('active');
+        document.getElementById('ragOptions').style.display = 'none';
+        document.getElementById('documentList').style.display = 'none';
+        document.getElementById('chatInput').placeholder = 'Введите запрос для веб-поиска...';
+    }
+    
+    console.log(`Switched to ${mode} mode`);
 }
 
 function autoResizeTextarea() {
@@ -217,15 +245,16 @@ async function sendMessage() {
     const sendBtn = document.getElementById('sendBtn');
     sendBtn.disabled = true;
     
-    // Отладочное логирование
-    console.log('[DEBUG] Query:', query);
-    console.log('[DEBUG] Query lowercase:', query.toLowerCase());
-    console.log('[DEBUG] Query length:', query.length);
-    console.log('[DEBUG] Checking referat:', query.toLowerCase() === 'referat', query.toLowerCase() === 'реферат');
-    
     addMessage(query, 'user');
     input.value = '';
     input.style.height = 'auto';
+    
+    // Если включен режим веб-поиска, используем web search
+    if (currentMode === 'web') {
+        await handleWebSearch(query);
+        sendBtn.disabled = false;
+        return;
+    }
     
     // Проверяем, является ли запрос командой суммаризации
     if (query.toLowerCase() === 'summary' || query.toLowerCase() === 'суммаризация') {
@@ -442,5 +471,45 @@ function formatFileSize(bytes) {
 
 function showNotification(message, type = 'info') {
     console.log(`[${type.toUpperCase()}] ${message}`);
+}
+
+async function handleWebSearch(query) {
+    const loadingMessage = addMessage('🔍 Ищу информацию в интернете...', 'assistant', true);
+    
+    try {
+        const response = await fetch('/api/websearch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query: query,
+                fetch_content: true
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Ошибка при веб-поиске');
+        }
+        
+        const result = await response.json();
+        
+        loadingMessage.remove();
+        
+        // Формируем сообщение с результатами
+        let message = `## 🌐 Результаты веб-поиска\n\n`;
+        message += `**Запрос:** ${result.query}\n\n`;
+        message += `---\n\n`;
+        message += result.summary;
+        
+        addMessage(message, 'assistant');
+        showNotification(`Найдено ${result.sources_count} источников`, 'success');
+        
+    } catch (error) {
+        loadingMessage.remove();
+        addMessage(`❌ Ошибка при веб-поиске: ${error.message}`, 'assistant');
+        showNotification(`Ошибка: ${error.message}`, 'error');
+    }
 }
 

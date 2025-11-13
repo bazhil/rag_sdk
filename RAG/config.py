@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     search_limit: int = 7
     min_similarity: float = 0.4
     
+    # Web search settings
+    web_search_results_count: int = 5
+    web_search_max_retries: int = 3
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
@@ -62,5 +66,7 @@ print(f"CHUNK_SIZE: {settings.chunk_size}")
 print(f"CHUNK_OVERLAP: {settings.chunk_overlap}")
 print(f"SEARCH_LIMIT: {settings.search_limit}")
 print(f"MIN_SIMILARITY: {settings.min_similarity}")
+print(f"WEB_SEARCH_RESULTS_COUNT: {settings.web_search_results_count}")
+print(f"WEB_SEARCH_MAX_RETRIES: {settings.web_search_max_retries}")
 print("=" * 60)
 

@@ -53,3 +53,21 @@ class ReferatResponse(BaseModel):
     chunk_count: int
     pdf_url: str  # URL для скачивания PDF
 
+
+class WebSearchRequest(BaseModel):
+    query: str
+    fetch_content: bool = True  # Извлекать ли содержимое страниц
+
+
+class WebSearchResult(BaseModel):
+    title: str
+    url: str
+    snippet: str
+
+
+class WebSearchResponse(BaseModel):
+    query: str
+    summary: str
+    results: List[WebSearchResult]
+    sources_count: int
+

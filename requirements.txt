@@ -28,3 +28,7 @@ deep-translator==1.11.4
 reportlab==4.0.7
 markdown2==2.4.12
 
+# Web search functionality
+duckduckgo-search==6.3.5
+requests==2.32.3
+

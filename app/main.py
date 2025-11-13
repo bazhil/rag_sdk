@@ -8,7 +8,12 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from RAG import RAGManager
-from .models import QueryRequest, QueryResponse, DocumentResponse, SummaryRequest, SummaryResponse, ReferatRequest, ReferatResponse
+from RAG.web_search import get_web_search_manager
+from .models import (
+    QueryRequest, QueryResponse, DocumentResponse, 
+    SummaryRequest, SummaryResponse, ReferatRequest, ReferatResponse,
+    WebSearchRequest, WebSearchResponse, WebSearchResult
+)
 
 
 # Логирование переменных окружения при запуске
@@ -250,6 +255,51 @@ async def create_referat(request: ReferatRequest):
         error_detail = f"Ошибка при создании реферативного перевода: {str(e)}\n{traceback.format_exc()}"
         print(error_detail)
         raise HTTPException(status_code=500, detail=f"Ошибка при создании реферативного перевода: {str(e)}")
+
+
+@app.post("/api/websearch", response_model=WebSearchResponse)
+async def web_search(request: WebSearchRequest):
+    print(f"\n[API] ========== WEB SEARCH REQUEST ==========")
+    print(f"[API] Query: {request.query}")
+    print(f"[API] Fetch content: {request.fetch_content}")
+    try:
+        if not request.query or not request.query.strip():
+            print(f"[API] ERROR: Empty query")
+            raise HTTPException(status_code=400, detail="Поисковый запрос не может быть пустым")
+        
+        web_search_manager = get_web_search_manager()
+        result = await web_search_manager.search_and_summarize(
+            query=request.query,
+            fetch_content=request.fetch_content
+        )
+        
+        # Преобразуем результаты в нужный формат
+        search_results = [
+            WebSearchResult(
+                title=r['title'],
+                url=r['url'],
+                snippet=r['snippet']
+            )
+            for r in result['results']
+        ]
+        
+        print(f"[API] Web search successful: {len(search_results)} results")
+        print(f"[API] ========================================\n")
+        
+        return WebSearchResponse(
+            query=result['query'],
+            summary=result['summary'],
+            results=search_results,
+            sources_count=result['sources_count']
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_detail = f"Ошибка при веб-поиске: {str(e)}\n{traceback.format_exc()}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=f"Ошибка при веб-поиске: {str(e)}")
 
 
 @app.get("/health")
